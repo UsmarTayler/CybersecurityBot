@@ -17,7 +17,7 @@ namespace CybersecurityBot
             string userName = AskUserName();
             StartChat(userName);
         }
-
+        // Voice Recordding implemetation
         static void PlayVoiceGreeting()
         {
             string audioPath = "welcome.wav";
@@ -46,7 +46,7 @@ namespace CybersecurityBot
                 Console.ResetColor();
             }
         }
-
+        // Start of Art Section/ code
         static void DisplayAsciiArt()
         {
             Console.ForegroundColor = ConsoleColor.Cyan;
@@ -109,7 +109,7 @@ namespace CybersecurityBot
             }
             Console.WriteLine();
         }
-
+        // chatbot and its questions with answers
         static void StartChat(string name)
         {
             DisplayDivider();
