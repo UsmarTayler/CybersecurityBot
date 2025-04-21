@@ -1,0 +1,15 @@
+C:\Users\tayle_6qeyl1g\Downloads\CybersecurityBot\obj\Debug\net8.0-windows\CybersecurityBot.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\tayle_6qeyl1g\Downloads\CybersecurityBot\obj\Debug\net8.0-windows\CybersecurityBot.AssemblyInfoInputs.cache
+C:\Users\tayle_6qeyl1g\Downloads\CybersecurityBot\obj\Debug\net8.0-windows\CybersecurityBot.AssemblyInfo.cs
+C:\Users\tayle_6qeyl1g\Downloads\CybersecurityBot\obj\Debug\net8.0-windows\CybersecurityBot.csproj.CoreCompileInputs.cache
+C:\Users\tayle_6qeyl1g\Downloads\CybersecurityBot\bin\Debug\net8.0-windows\CybersecurityBot.exe
+C:\Users\tayle_6qeyl1g\Downloads\CybersecurityBot\bin\Debug\net8.0-windows\CybersecurityBot.deps.json
+C:\Users\tayle_6qeyl1g\Downloads\CybersecurityBot\bin\Debug\net8.0-windows\CybersecurityBot.runtimeconfig.json
+C:\Users\tayle_6qeyl1g\Downloads\CybersecurityBot\bin\Debug\net8.0-windows\CybersecurityBot.dll
+C:\Users\tayle_6qeyl1g\Downloads\CybersecurityBot\bin\Debug\net8.0-windows\CybersecurityBot.pdb
+C:\Users\tayle_6qeyl1g\Downloads\CybersecurityBot\obj\Debug\net8.0-windows\CybersecurityBot.dll
+C:\Users\tayle_6qeyl1g\Downloads\CybersecurityBot\obj\Debug\net8.0-windows\refint\CybersecurityBot.dll
+C:\Users\tayle_6qeyl1g\Downloads\CybersecurityBot\obj\Debug\net8.0-windows\CybersecurityBot.pdb
+C:\Users\tayle_6qeyl1g\Downloads\CybersecurityBot\obj\Debug\net8.0-windows\CybersecurityBot.genruntimeconfig.cache
+C:\Users\tayle_6qeyl1g\Downloads\CybersecurityBot\obj\Debug\net8.0-windows\ref\CybersecurityBot.dll
+C:\Users\tayle_6qeyl1g\Downloads\CybersecurityBot\bin\Debug\net8.0-windows\welcome.wav
