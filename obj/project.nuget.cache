@@ -1,8 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "lNlZQ7xwabA=",
+  "dgSpecHash": "syBUM4Eqpak=",
   "success": true,
   "projectFilePath": "C:\\Users\\tayle_6qeyl1g\\Downloads\\CybersecurityBot\\CybersecurityBot.csproj",
-  "expectedPackageFiles": [],
+  "expectedPackageFiles": [
+    "C:\\Users\\tayle_6qeyl1g\\.nuget\\packages\\system.windows.extensions\\9.0.4\\system.windows.extensions.9.0.4.nupkg.sha512"
+  ],
   "logs": []
 }

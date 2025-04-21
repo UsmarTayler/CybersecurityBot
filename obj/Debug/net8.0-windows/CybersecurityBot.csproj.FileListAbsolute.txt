@@ -13,3 +13,8 @@ C:\Users\tayle_6qeyl1g\Downloads\CybersecurityBot\obj\Debug\net8.0-windows\Cyber
 C:\Users\tayle_6qeyl1g\Downloads\CybersecurityBot\obj\Debug\net8.0-windows\CybersecurityBot.genruntimeconfig.cache
 C:\Users\tayle_6qeyl1g\Downloads\CybersecurityBot\obj\Debug\net8.0-windows\ref\CybersecurityBot.dll
 C:\Users\tayle_6qeyl1g\Downloads\CybersecurityBot\bin\Debug\net8.0-windows\welcome.wav
+C:\Users\tayle_6qeyl1g\Downloads\CybersecurityBot\bin\Debug\net8.0-windows\System.Windows.Extensions.dll
+C:\Users\tayle_6qeyl1g\Downloads\CybersecurityBot\bin\Debug\net8.0-windows\runtimes\win\lib\net8.0\System.Windows.Extensions.dll
+C:\Users\tayle_6qeyl1g\Downloads\CybersecurityBot\obj\Debug\net8.0-windows\CybersecurityBot.csproj.AssemblyReference.cache
+C:\Users\tayle_6qeyl1g\Downloads\CybersecurityBot\obj\Debug\net8.0-windows\CybersecurityBot.sourcelink.json
+C:\Users\tayle_6qeyl1g\Downloads\CybersecurityBot\obj\Debug\net8.0-windows\Cybersec.8B30439D.Up2Date

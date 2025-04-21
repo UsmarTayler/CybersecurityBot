@@ -3,7 +3,7 @@ using System;
 using System.Media;
 using System.Threading;
 using System.IO;
-using System.Windows.Media;
+
 
 namespace CybersecurityBot
 {
@@ -32,12 +32,9 @@ namespace CybersecurityBot
 
             try
             {
-                MediaPlayer player = new MediaPlayer();
-                player.Open(new Uri(Path.GetFullPath(audioPath)));
-                player.Play();
-
-                // Wait for the audio to finish playing  
-                Thread.Sleep(3000); // Adjust the duration based on the audio length  
+                using SoundPlayer player = new SoundPlayer(audioPath);
+                player.Load();
+                player.PlaySync(); // This waits for it to finish
             }
             catch (Exception ex)
             {
