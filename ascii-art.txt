@@ -1,10 +1,13 @@
-﻿            ______  
-           |      |  
-           | Cyber|  
-           |______|  
-            ||  ||  
-            ||  ||  
-           (__) (__)  
+﻿  ======================================================
+              CYBERSECURITY AWARENESS BOT
+======================================================
 
-    Cybersecurity Awareness Bot  
-      Helping you stay safe online!
+        ______                 ______         
+       |      |               |      |        
+       | Cyber|               |Secure|       
+       |______|               |______|       
+        ||  ||                [::][::]      
+        ||  ||                [::][::]      
+       (__)(__)               (__)(__)      
+
+Helping you stay safe online!
