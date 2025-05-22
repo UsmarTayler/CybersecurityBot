@@ -1,79 +1,87 @@
 using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Media;
 using System.Threading;
-using System.IO;
-using System.Collections.Generic;
 
 namespace CybersecurityBot
 {
     class Program
     {
-        // ─────────────────────────────────────────────
-        // Part 3: Conversation Flow (Track Topic)
-        // ─────────────────────────────────────────────
         static string lastTopic = null;
+        static List<string> userInterests = new List<string>();
+        static string userMood = null;
         static Random random = new Random();
 
-        // ─────────────────────────────────────────────
-        // Part 4: Memory and Recall
-        // ─────────────────────────────────────────────
-        static string userInterest = null;
-
-        // ─────────────────────────────────────────────
-        // Part 1: Keyword Recognition Responses
-        // ─────────────────────────────────────────────
         static Dictionary<string, string> keywordResponses = new Dictionary<string, string>()
         {
-            { "password", "Make sure to use strong, unique passwords for each account. Avoid using personal details in your passwords." },
-            { "scam", "Be cautious of messages asking for urgent action, payments, or sensitive info. Scammers often pretend to be trusted contacts." },
-            { "privacy", "Adjust your social media and app settings to limit what data is shared. Be mindful of what you post online." }
+            { "password", "Use strong, unique passwords and avoid reusing them. Consider using a password manager." },
+            { "scam", "Be cautious of messages urging urgent action or asking for private info. Scammers often impersonate trusted sources." },
+            { "privacy", "Review your social media and app permissions. Only share what’s necessary." },
+            { "malware", "Malware is malicious software designed to harm your system. Keep your antivirus up to date to help detect it." },
+            { "vpn", "A VPN encrypts your internet connection and is useful when using public networks." },
+            { "encryption", "Encryption protects your data by making it unreadable to unauthorized users." },
+            { "backups", "Regular backups ensure you can recover your data in case of loss or ransomware attacks." },
+            { "ransomware", "Ransomware locks your files and demands payment. Always keep backups and never pay the ransom." },
+            { "patch", "Software patches fix security flaws. Always install them promptly." },
+            { "identity theft", "Protect your personal information and monitor accounts to prevent identity theft." }
         };
 
-        // ─────────────────────────────────────────────
-        // Part 2: Random Response Arrays
-        // ─────────────────────────────────────────────
-        static string[] phishingTips = new string[]
-        {
-            "Be cautious of emails asking for personal information.",
-            "Scammers often disguise themselves as trusted organisations.",
-            "Hover over links before clicking — they may lead to fake sites.",
-            "Don't download attachments from unknown senders.",
-            "Report phishing emails to your provider or IT department."
+        static string[] phishingTips = {
+            "Be cautious of emails asking for personal info.",
+            "Hover over links before clicking them.",
+            "Don't open unexpected attachments.",
+            "Verify sender identity before responding."
         };
 
-        static string[] updateTips = new string[]
-        {
-            "Software updates often patch known security holes — install them promptly.",
-            "Many attacks exploit outdated software. Keeping everything updated helps prevent this.",
-            "Set your system to update automatically whenever possible.",
-            "Updates don't just add features — they fix critical security flaws."
+        static string[] updateTips = {
+            "Software updates patch known security holes — install them promptly.",
+            "Enable automatic updates to stay protected.",
+            "Hackers target outdated software. Don't wait to update."
         };
 
-        static string[] firewallTips = new string[]
-        {
-            "Firewalls act as gatekeepers between your device and the internet — they block threats.",
-            "Make sure your operating system’s firewall is enabled and up-to-date.",
-            "Hardware firewalls are great for network-wide protection at home or in business environments.",
-            "Firewalls monitor network traffic and block unauthorized access attempts."
+        static string[] firewallTips = {
+            "A firewall acts as a barrier between your device and the internet.",
+            "Keep your firewall enabled to prevent unauthorized access.",
+            "Use hardware firewalls for better protection at home or work."
         };
+
+        static string[] sentimentWords = { "worried", "scared", "nervous", "confused", "frustrated", "curious" };
 
         static void Main(string[] args)
         {
             DisplayAsciiArt();
             PlayVoiceGreeting();
 
-            string userName = AskUserName();
-            AskUserInterest(); // Part 4
-            StartChat(userName);
+            string name = AskUserName();
+            AskUserMood();
+            AskUserInterest();
+            StartChat(name);
         }
 
-        // ─────────────────────────────────────────────
-        // Voice Greeting Section
-        // ─────────────────────────────────────────────
+        static void DisplayAsciiArt()
+        {
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine(@"
+======================================================
+              CYBERSECURITY AWARENESS BOT
+======================================================
+
+        ______                 ______         
+       |      |               |      |        
+       | Cyber|               |Secure|       
+       |______|               |______|       
+        ||  ||                [::][::]      
+        ||  ||                [::][::]      
+       (__)(__)               (__)(__)      
+
+Helping you stay safe online!");
+            Console.ResetColor();
+        }
+
         static void PlayVoiceGreeting()
         {
             string audioPath = "welcome.wav";
-
             if (!File.Exists(audioPath))
             {
                 Console.ForegroundColor = ConsoleColor.Yellow;
@@ -96,37 +104,13 @@ namespace CybersecurityBot
             }
         }
 
-        // ─────────────────────────────────────────────
-        // UI Display Section
-        // ─────────────────────────────────────────────
-        static void DisplayAsciiArt()
-        {
-            Console.ForegroundColor = ConsoleColor.Cyan;
-            Console.WriteLine(@"
-======================================================
-              CYBERSECURITY AWARENESS BOT
-======================================================
-
-        ______                 ______         
-       |      |               |      |        
-       | Cyber|               |Secure|       
-       |______|               |______|       
-        ||  ||                [::][::]      
-        ||  ||                [::][::]      
-       (__)(__)               (__)(__)      
-
-Helping you stay safe online!
-");
-            Console.ResetColor();
-        }
-
         static string AskUserName()
         {
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.Write("Before we begin, what's your name? ");
             Console.ResetColor();
-            string name = Console.ReadLine()?.Trim();
 
+            string name = Console.ReadLine()?.Trim();
             while (string.IsNullOrWhiteSpace(name))
             {
                 Console.ForegroundColor = ConsoleColor.Red;
@@ -141,9 +125,35 @@ Helping you stay safe online!
             return name;
         }
 
-        /// <summary>
-        /// Prompts the user to enter a topic of interest for memory recall.
-        /// </summary>
+        static void AskUserMood()
+        {
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine("\nHow are you feeling today?");
+            Console.WriteLine("Examples: curious, confused, worried, frustrated, etc.");
+            Console.ResetColor();
+
+            Console.Write("> ");
+            string mood = Console.ReadLine()?.Trim().ToLower();
+            if (!string.IsNullOrWhiteSpace(mood))
+            {
+                foreach (var word in sentimentWords)
+                {
+                    if (mood.Contains(word))
+                    {
+                        userMood = word;
+                        Console.ForegroundColor = ConsoleColor.DarkCyan;
+                        Console.WriteLine($"Thanks for sharing. I understand you're feeling {userMood} — let's work through things together.");
+                        Console.ResetColor();
+                        return;
+                    }
+                }
+            }
+
+            Console.ForegroundColor = ConsoleColor.Gray;
+            Console.WriteLine("Got it. Let's dive into your questions whenever you're ready.");
+            Console.ResetColor();
+        }
+
         static void AskUserInterest()
         {
             Console.ForegroundColor = ConsoleColor.Yellow;
@@ -153,34 +163,21 @@ Helping you stay safe online!
 
             Console.Write("> ");
             string input = Console.ReadLine()?.Trim();
-
             if (!string.IsNullOrWhiteSpace(input))
             {
-                userInterest = input;
-                Console.ForegroundColor = ConsoleColor.DarkCyan;
-                Console.WriteLine($"Thanks! I’ll keep in mind that you're interested in {userInterest}.");
+                if (!userInterests.Contains(input, StringComparer.OrdinalIgnoreCase))
+                {
+                    userInterests.Add(input);
+                    Console.ForegroundColor = ConsoleColor.DarkCyan;
+                    Console.WriteLine($"Thanks! I'll remember you're interested in {input}.");
+                }
+                else
+                {
+                    Console.ForegroundColor = ConsoleColor.Gray;
+                    Console.WriteLine($"You've already shared you're interested in {input}.");
+                }
                 Console.ResetColor();
             }
-            else
-            {
-                Console.ForegroundColor = ConsoleColor.Gray;
-                Console.WriteLine("No worries! You can still ask questions anytime.");
-                Console.ResetColor();
-            }
-        }
-
-        static void DisplayDivider()
-        {
-            Console.ForegroundColor = ConsoleColor.DarkGray;
-            Console.WriteLine("\n------------------------------------------------------\n");
-            Console.ResetColor();
-        }
-
-        static void DisplaySection(string title)
-        {
-            Console.ForegroundColor = ConsoleColor.Magenta;
-            Console.WriteLine($"--- {title.ToUpper()} ---");
-            Console.ResetColor();
         }
 
         static void TypeOut(string message, int delay = 35)
@@ -193,39 +190,39 @@ Helping you stay safe online!
             Console.WriteLine();
         }
 
-        // ─────────────────────────────────────────────
-        // Part 3: Conversation Flow Helper
-        // ─────────────────────────────────────────────
-        static void HandleFollowUp()
+        static void DisplayDivider()
         {
-            if (!string.IsNullOrEmpty(lastTopic))
-            {
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.WriteLine($"\nWould you like to know more about {lastTopic}? You can ask follow-up questions.");
-                Console.ResetColor();
-            }
+            Console.ForegroundColor = ConsoleColor.DarkGray;
+            Console.WriteLine("\n------------------------------------------------------\n");
+            Console.ResetColor();
         }
 
-        // ─────────────────────────────────────────────
-        // Part 4: Recall Helper
-        // ─────────────────────────────────────────────
         static void RemindUserInterest()
         {
-            if (!string.IsNullOrEmpty(userInterest))
+            if (userInterests.Count > 0)
             {
                 Console.ForegroundColor = ConsoleColor.DarkYellow;
-                Console.WriteLine($"Earlier, you mentioned you're interested in {userInterest}. Want to ask more about that?");
+                Console.WriteLine("Earlier, you mentioned you're interested in: " + string.Join(", ", userInterests));
                 Console.ResetColor();
             }
         }
 
-        // ─────────────────────────────────────────────
-        // Chatbot Logic Section
-        // ─────────────────────────────────────────────
+        static void HandleFollowUp()
+        {
+            if (!string.IsNullOrWhiteSpace(lastTopic))
+            {
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine($"\nWould you like to know more about {lastTopic}?");
+                Console.ResetColor();
+            }
+        }
+
         static void StartChat(string name)
         {
             DisplayDivider();
-            DisplaySection("Welcome Chat");
+            Console.ForegroundColor = ConsoleColor.Magenta;
+            Console.WriteLine("--- WELCOME CHAT ---");
+            Console.ResetColor();
 
             TypeOut($"Hello {name}, I'm your Cybersecurity Assistant.");
             TypeOut("Here are some things you can ask me about:");
@@ -261,7 +258,7 @@ Helping you stay safe online!
 
                 if (string.IsNullOrWhiteSpace(input))
                 {
-                    TypeOut("I didn’t catch that. Please type a question.");
+                    TypeOut("I didn’t catch that. Try typing something like 'what is phishing?'.");
                     continue;
                 }
 
@@ -277,73 +274,156 @@ Helping you stay safe online!
 
                 bool responded = false;
 
-                // ─── Part 1: Keyword Recognition ───
-                foreach (var keyword in keywordResponses.Keys)
+                if (input.StartsWith("i'm interested in") || input.StartsWith("i am interested in"))
                 {
-                    if (input.Contains(keyword))
+                    string interest = input.Replace("i'm interested in", "").Replace("i am interested in", "").Trim();
+                    if (!userInterests.Contains(interest, StringComparer.OrdinalIgnoreCase))
                     {
-                        TypeOut(keywordResponses[keyword]);
-                        lastTopic = keyword;
-                        responded = true;
-                        break;
+                        userInterests.Add(interest);
+                        TypeOut($"Got it! I'll remember you're interested in {interest}.");
                     }
-                }
-
-                // ─── Part 2: Random Response for Phishing ───
-                if (!responded && input.Contains("phishing"))
-                {
-                    string tip = phishingTips[random.Next(phishingTips.Length)];
-                    TypeOut(tip);
-                    lastTopic = "phishing";
-                    responded = true;
-                }
-
-                // ─── Part 2 Extension: Random for Updates ───
-                if (!responded && (input.Contains("software update") || input.Contains("updates")))
-                {
-                    string tip = updateTips[random.Next(updateTips.Length)];
-                    TypeOut(tip);
-                    lastTopic = "software updates";
-                    responded = true;
-                }
-
-                // ─── Part 2 Extension: Random for Firewall ───
-                if (!responded && input.Contains("firewall"))
-                {
-                    string tip = firewallTips[random.Next(firewallTips.Length)];
-                    TypeOut(tip);
-                    lastTopic = "firewalls";
-                    responded = true;
-                }
-
-                // ─── Fixed Fallbacks ───
-                if (!responded)
-                {
-                    if (input.Contains("how are you"))
-                        TypeOut("I'm operating normally. Thanks for asking!");
-                    else if (input.Contains("purpose"))
-                        TypeOut("I'm here to provide helpful tips on cybersecurity.");
-                    else if (input.Contains("what can") && input.Contains("ask"))
-                        TypeOut("You can ask about passwords, phishing, 2FA, firewalls, antivirus, and more.");
-                    else if (input.Contains("browsing"))
-                        TypeOut("Use a secure browser, avoid suspicious sites, and enable pop-up blockers.");
-                    else if (input.Contains("2fa") || input.Contains("two-factor") || input.Contains("multi-factor"))
-                        TypeOut("Two-factor authentication adds extra security. Always enable it where possible.");
-                    else if (input.Contains("wifi") || input.Contains("public network"))
-                        TypeOut("Avoid using public Wi-Fi for banking or sensitive work. Use a VPN if needed.");
-                    else if (input.Contains("antivirus"))
-                        TypeOut("Yes, antivirus software helps detect and prevent threats.");
-                    else if (input.Contains("social media"))
-                        TypeOut("Be cautious of what you share and review your privacy settings often.");
                     else
-                        TypeOut("I didn't understand that. Try rephrasing or ask something else.");
-
+                    {
+                        TypeOut($"You've already mentioned you're interested in {interest}.");
+                    }
                     lastTopic = null;
+
+                    // Moved below to avoid overriding randomized keywords
+
+                    if (!responded && input.Contains("phishing"))
+                    {
+                        int index = random.Next(phishingTips.Length);
+                        while (lastTopic == $"phishing_{index}")
+                        {
+                            index = random.Next(phishingTips.Length);
+                        }
+                        TypeOut(phishingTips[index]);
+                        lastTopic = $"phishing_{index}";
+                        responded = true;
+                    }
+                    else if (!responded && input.Contains("password"))
+                    {
+                        string[] passwordTips = {
+                        "Use long, complex passwords that include symbols and numbers.",
+                        "Never reuse the same password across multiple sites.",
+                        "Consider using a password manager to generate and store passwords securely."
+                    };
+                        int index = random.Next(passwordTips.Length);
+                        while (lastTopic == $"password_{index}")
+                        {
+                            index = random.Next(passwordTips.Length);
+                        }
+                        TypeOut(passwordTips[index]);
+                        lastTopic = $"password_{index}";
+                        responded = true;
+                    }
+                    else if (!responded && input.Contains("privacy"))
+                    {
+                        string[] privacyTips = {
+                        "Review your privacy settings on social media regularly.",
+                        "Only share personal information with trusted sources.",
+                        "Limit location sharing unless absolutely necessary."
+                    };
+                        int index = random.Next(privacyTips.Length);
+                        while (lastTopic == $"privacy_{index}")
+                        {
+                            index = random.Next(privacyTips.Length);
+                        }
+                        TypeOut(privacyTips[index]);
+                        lastTopic = $"privacy_{index}";
+                        responded = true;
+                    }
+                    else if (!responded && input.Contains("antivirus"))
+                    {
+                        string[] antivirusTips = {
+                        "Keep your antivirus software updated to detect new threats.",
+                        "Run regular scans to ensure your system is secure.",
+                        "Avoid downloading files from untrusted sources."
+                    };
+                        int index = random.Next(antivirusTips.Length);
+                        while (lastTopic == $"antivirus_{index}")
+                        {
+                            index = random.Next(antivirusTips.Length);
+                        }
+                        TypeOut(antivirusTips[index]);
+                        lastTopic = $"antivirus_{index}";
+                        responded = true;
+                    }
+                    else if (!responded && input.Contains("social media"))
+                    {
+                        string[] socialMediaTips = {
+                        "Think before you post — what you share can be permanent.",
+                        "Adjust your privacy settings to control who sees your content.",
+                        "Avoid accepting friend requests from strangers."
+                    };
+                        int index = random.Next(socialMediaTips.Length);
+                        while (lastTopic == $"socialmedia_{index}")
+                        {
+                            index = random.Next(socialMediaTips.Length);
+                        }
+                        TypeOut(socialMediaTips[index]);
+                        lastTopic = $"socialmedia_{index}";
+                        responded = true;
+                    }
+                    else if (!responded && (input.Contains("software update") || input.Contains("updates")))
+                    {
+                        TypeOut(updateTips[random.Next(updateTips.Length)]);
+                        lastTopic = "software updates";
+                        responded = true;
+                    }
+                    else if (!responded && input.Contains("firewall"))
+                    {
+                        TypeOut(firewallTips[random.Next(firewallTips.Length)]);
+                        lastTopic = "firewalls";
+                        responded = true;
+                    }
+
+                    if (!responded)
+                    {
+                        foreach (var keyword in keywordResponses)
+                        {
+                            if (input.Contains(keyword.Key))
+                            {
+                                TypeOut(keyword.Value);
+                                lastTopic = keyword.Key;
+                                responded = true;
+                                break;
+                            }
+                        }
+
+                        if (!responded)
+                        {
+                            if (input.Contains("how are you"))
+                                TypeOut("I'm operating smoothly, thanks for asking!");
+                            else if (input.Contains("purpose"))
+                                TypeOut("My purpose is to guide you through cybersecurity topics and keep you informed.");
+                            else if (input.Contains("what can") && input.Contains("ask"))
+                                TypeOut("You can ask me about topics like password safety, phishing, antivirus, updates, and more.");
+                            else if (input.Contains("browsing"))
+                                TypeOut("Avoid clicking unknown links. Always use updated browsers and avoid popups.");
+                            else if (input.Contains("2fa") || input.Contains("two-factor") || input.Contains("multi-factor"))
+                                TypeOut("Two-factor authentication adds an extra layer of security. Always enable it.");
+                            else if (input.Contains("wifi") || input.Contains("public network"))
+                                TypeOut("Avoid banking on public Wi-Fi. Use VPNs when necessary.");
+                            else
+                            {
+                                string[] fallbackResponses = {
+                                "I'm not sure I understand that yet. Try asking about phishing, passwords, or 2FA.",
+                                "Hmm, that’s a new one for me. Are you asking about a cybersecurity concept or threat?",
+                                "Interesting! I'm not familiar with that. Can you try asking it another way?"
+                            };
+                                TypeOut(fallbackResponses[random.Next(fallbackResponses.Length)]);
+                            }
+
+                            lastTopic = null;
+                            responded = true;
+                        }
+                    }
+                    responded = true;
                 }
 
-                HandleFollowUp();      // ─── Part 3
-                RemindUserInterest();  // ─── Part 4
-
+                HandleFollowUp();
+                RemindUserInterest();
                 Console.ResetColor();
                 DisplayDivider();
             }
